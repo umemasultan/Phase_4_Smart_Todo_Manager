@@ -1,4 +1,47 @@
-# Todo Chatbot: AI-Operated Governance System
+# 🤖 Todo Chatbot - AI-Powered Task Management
+
+> A modern, feature-rich todo application with intelligent chatbot assistance and professional UI
+
+[![GitHub](https://img.shields.io/badge/GitHub-Phase__4__Smart__Todo__Manager-blue)](https://github.com/umemasultan/Phase_4_Smart_Todo_Manager)
+[![Node.js](https://img.shields.io/badge/Node.js-Express-green)](https://nodejs.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+## ✨ Features
+
+- 🤖 **AI Chatbot Assistant** - Intelligent task management through natural language
+- 📊 **Analytics Dashboard** - Track productivity with detailed statistics
+- ⏱️ **Pomodoro Timer** - Built-in focus timer for better productivity
+- 🎯 **Task Prioritization** - High/Medium/Low priority levels with color coding
+- 💾 **Export/Import** - Backup and restore tasks (JSON/CSV)
+- ⌨️ **Keyboard Shortcuts** - Power user features for quick actions
+- 🏆 **Achievement System** - Unlock badges as you complete tasks
+- 🎨 **Professional Theme** - Beautiful #11224E glassmorphism design
+- 🌓 **Dark/Light Mode** - Toggle between themes
+- 📱 **Responsive Design** - Works on all devices
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/umemasultan/Phase_4_Smart_Todo_Manager.git
+
+# Navigate to project directory
+cd Phase_4_Smart_Todo_Manager
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm start
+```
+
+The application will be available at `http://localhost:5000`
 
 ## 🎯 Mission Complete
 
@@ -170,3 +213,24 @@ minikube service todo-frontend -n todo-app --url
 The Todo Chatbot system has been successfully transformed into a **production-ready, fully governed, spec-driven, AI-operated Kubernetes system** that runs locally on Minikube. All governance principles and requirements have been implemented and validated.
 
 **The system is ready for deployment!** 🚀
+
+## 👩‍💻 Author
+
+**Umema Sultan**
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/umema-sultan-385797341/)
+[![GitHub](https://img.shields.io/badge/GitHub-Follow-black?style=flat&logo=github)](https://github.com/umemasultan)
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🙏 Acknowledgments
+
+- Built with Node.js and Express
+- Powered by AI chatbot technology
+- Designed with modern glassmorphism UI principles
+
+---
+
+**© 2026 Umema Sultan - AI-Powered Task Management**
