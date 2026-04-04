@@ -1,0 +1,153 @@
+# Values file derived from master blueprint
+# Version: 1.0
+# Governance Level: Spec-Driven with AI Operations
+
+# Frontend configuration from blueprint
+frontend:
+  name: todo-frontend
+  replicaCount: 2
+  image:
+    repository: todo-frontend
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  service:
+    type: NodePort
+    port: 80
+    nodePort: 30080
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  healthCheck:
+    path: "/"
+    initialDelay: 5
+    period: 5
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# Backend configuration from blueprint
+backend:
+  name: todo-backend
+  replicaCount: 2
+  image:
+    repository: todo-backend
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  service:
+    type: ClusterIP
+    port: 8080
+  env:
+    - name: DATABASE_URL
+      value: "postgresql://todo_user:password123@todo-database:5432/todo_app"
+    - name: REDIS_URL
+      value: "redis://todo-redis:6379"
+    - name: NODE_ENV
+      value: "production"
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  healthCheck:
+    livenessPath: "/health"
+    readinessPath: "/health"
+    livenessInitialDelay: 30
+    readinessInitialDelay: 5
+    period: 10
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# Database configuration from blueprint
+database:
+  enabled: true
+  name: todo-database
+  replicaCount: 1
+  image:
+    repository: todo-database
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  service:
+    type: ClusterIP
+    port: 5432
+  env:
+    - name: POSTGRES_DB
+      value: "todo_app"
+    - name: POSTGRES_USER
+      value: "todo_user"
+    - name: POSTGRES_PASSWORD
+      value: "password123"
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# Cache configuration from blueprint
+cache:
+  enabled: true
+  name: todo-redis
+  replicaCount: 1
+  image:
+    repository: redis
+    pullPolicy: IfNotPresent
+    tag: "7-alpine"
+  service:
+    type: ClusterIP
+    port: 6379
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# Namespace configuration from blueprint
+namespace:
+  name: todo-app
+  description: "Isolated namespace for Todo Chatbot application"
+
+# Governance policies from blueprint
+governance:
+  docker_ai_enabled: true
+  kubectl_ai_enabled: true
+  kagent_enabled: true
+  security_policy: restricted
+  compliance_level: spec_driven
+
+# Scaling policies from blueprint
+scaling:
+  horizontal_scaling:
+    cpu_threshold: 70
+    memory_threshold: 70
+    min_replicas:
+      frontend: 1
+      backend: 1
+      database: 1
+    max_replicas:
+      frontend: 5
+      backend: 5
+      database: 2
+  hpa_enabled: false  # HPA can be enabled separately
+
+# Deployment strategy from blueprint
+deployment:
+  strategy: rollingUpdate
+  maxSurge: 25%
+  maxUnavailable: 25%
+  timeout: 600

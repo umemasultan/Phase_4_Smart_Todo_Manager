@@ -1,0 +1,70 @@
+{{- if .Values.cache.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.cache.name }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: {{ .Values.cache.name }}
+    governance: spec-driven-ai-operated
+  annotations:
+    governance/security: {{ .Values.governance.security_policy }}
+    governance/compliance: {{ .Values.governance.compliance_level }}
+    deployment/strategy: {{ .Values.deployment.strategy }}
+    scaling/horizontal: "false"  # Cache typically doesn't scale horizontally in basic setup
+    scaling/cpu-threshold: "{{ .Values.scaling.horizontal_scaling.cpu_threshold }}"
+spec:
+  replicas: {{ .Values.cache.replicaCount }}
+  strategy:
+    type: {{ .Values.deployment.strategy }}
+    rollingUpdate:
+      maxSurge: {{ .Values.deployment.maxSurge }}
+      maxUnavailable: {{ .Values.deployment.maxUnavailable }}
+  selector:
+    matchLabels:
+      app: {{ .Values.cache.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.cache.name }}
+        governance: spec-driven-ai-operated
+    spec:
+      containers:
+        - name: cache
+          image: "{{ .Values.cache.image.repository }}:{{ .Values.cache.image.tag }}"
+          imagePullPolicy: {{ .Values.cache.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.cache.service.port }}
+          resources: {{- toYaml .Values.cache.resources | nindent 12 }}
+      {{- if .Values.cache.nodeSelector }}
+      nodeSelector: {{- toYaml .Values.cache.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.cache.tolerations }}
+      tolerations: {{- toYaml .Values.cache.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.cache.affinity }}
+      affinity: {{- toYaml .Values.cache.affinity | nindent 8 }}
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.cache.name }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: {{ .Values.cache.name }}
+    governance: spec-driven-ai-operated
+  annotations:
+    governance/compliance: {{ .Values.governance.compliance_level }}
+    service/type: {{ .Values.cache.service.type }}
+    service/access: internal
+spec:
+  type: {{ .Values.cache.service.type }}
+  ports:
+    - port: {{ .Values.cache.service.port }}
+      targetPort: {{ .Values.cache.service.port }}
+      protocol: TCP
+      name: redis
+  selector:
+    app: {{ .Values.cache.name }}
+{{- end }}

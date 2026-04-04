@@ -1,0 +1,71 @@
+{{- if .Values.database.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.database.name }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: {{ .Values.database.name }}
+    governance: spec-driven-ai-operated
+  annotations:
+    governance/security: {{ .Values.governance.security_policy }}
+    governance/compliance: {{ .Values.governance.compliance_level }}
+    deployment/strategy: {{ .Values.deployment.strategy }}
+    scaling/horizontal: "false"  # Database typically doesn't scale horizontally
+    scaling/cpu-threshold: "{{ .Values.scaling.horizontal_scaling.cpu_threshold }}"
+spec:
+  replicas: {{ .Values.database.replicaCount }}
+  strategy:
+    type: {{ .Values.deployment.strategy }}
+    rollingUpdate:
+      maxSurge: {{ .Values.deployment.maxSurge }}
+      maxUnavailable: {{ .Values.deployment.maxUnavailable }}
+  selector:
+    matchLabels:
+      app: {{ .Values.database.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.database.name }}
+        governance: spec-driven-ai-operated
+    spec:
+      containers:
+        - name: database
+          image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}"
+          imagePullPolicy: {{ .Values.database.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.database.service.port }}
+          env: {{- toYaml .Values.database.env | nindent 12 }}
+          resources: {{- toYaml .Values.database.resources | nindent 12 }}
+      {{- if .Values.database.nodeSelector }}
+      nodeSelector: {{- toYaml .Values.database.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.database.tolerations }}
+      tolerations: {{- toYaml .Values.database.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.database.affinity }}
+      affinity: {{- toYaml .Values.database.affinity | nindent 8 }}
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.database.name }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: {{ .Values.database.name }}
+    governance: spec-driven-ai-operated
+  annotations:
+    governance/compliance: {{ .Values.governance.compliance_level }}
+    service/type: {{ .Values.database.service.type }}
+    service/access: internal
+spec:
+  type: {{ .Values.database.service.type }}
+  ports:
+    - port: {{ .Values.database.service.port }}
+      targetPort: {{ .Values.database.service.port }}
+      protocol: TCP
+      name: postgres
+  selector:
+    app: {{ .Values.database.name }}
+{{- end }}

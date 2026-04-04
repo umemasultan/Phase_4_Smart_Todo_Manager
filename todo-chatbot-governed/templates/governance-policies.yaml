@@ -1,0 +1,55 @@
+{{- if .Values.governance.kubectl_ai_enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubectl-ai-policies
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: todo-chatbot-governed
+    governance: ai-enabled
+data:
+  policies.yaml: |
+    deployment_management: required
+    scaling_operations: ai_assisted
+    troubleshooting: ai_diagnosed
+    monitoring: ai_enabled
+    security_compliance: verified
+{{- end }}
+
+{{- if .Values.governance.kagent_enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kagent-policies
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: todo-chatbot-governed
+    governance: ai-enabled
+data:
+  policies.yaml: |
+    cluster_health_analysis: continuous
+    resource_optimization: recommended
+    bottleneck_detection: enabled
+    anomaly_detection: real_time
+    predictive_scaling: enabled
+{{- end }}
+
+{{- if .Values.governance.docker_ai_enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: docker-ai-policies
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: todo-chatbot-governed
+    governance: ai-enabled
+data:
+  policies.yaml: |
+    optimization_enabled: true
+    security_scanning: required
+    layer_optimization: enabled
+    build_context_analysis: required
+{{- end }}

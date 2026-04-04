@@ -1,0 +1,26 @@
+{
+  "name": "todo-chatbot-dev",
+  "version": "1.0.0",
+  "description": "Todo Chatbot - AI-Powered Task Management by Umema Sultan",
+  "main": "dev-server.js",
+  "scripts": {
+    "start": "node dev-server.js",
+    "dev": "node dev-server.js",
+    "install-deps": "npm install"
+  },
+  "keywords": [
+    "todo",
+    "chatbot",
+    "ai",
+    "task-management"
+  ],
+  "author": "Umema Sultan",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

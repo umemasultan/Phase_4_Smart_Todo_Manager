@@ -1,0 +1,22 @@
+apiVersion: v2
+name: todo-chatbot-governed
+description: A governed, AI-operated Todo Chatbot application following the master blueprint
+
+# A chart can be either an 'application' or a 'library' chart.
+type: application
+
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+version: 1.0.0
+
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application.
+appVersion: "1.1.0"
+
+home: https://github.com/spec-driven/todo-chatbot
+icon: https://example.com/icon.png
+sources:
+  - https://github.com/spec-driven/todo-chatbot
+maintainers:
+  - name: Cloud Native Governance Team
+    email: governance@todo-chatbot.example.com
