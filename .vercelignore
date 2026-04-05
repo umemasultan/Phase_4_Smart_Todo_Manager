@@ -1,0 +1,30 @@
+# Large binaries
+minikube.exe
+helm.exe
+
+# Node modules
+node_modules
+backend/node_modules
+
+# Git
+.git
+
+# Specs and docs
+specs/
+history/
+.specify/
+.claude/
+
+# Database
+database/
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Other large files
+*.exe
+*.zip
+*.tar.gz
+Phase_4/

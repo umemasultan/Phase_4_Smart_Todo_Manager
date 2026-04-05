@@ -13,16 +13,24 @@ app_port: 3000
 
 An intelligent task management application with AI chatbot assistance.
 
+## 🚀 Live Demo
+
+**Live on Vercel:** [https://phase4-smart-todo-manager.vercel.app](https://phase4-smart-todo-manager.vercel.app)
+
+**GitHub Repository:** [https://github.com/umemasultan/Phase_4_Smart_Todo_Manager](https://github.com/umemasultan/Phase_4_Smart_Todo_Manager)
+
 **Features:**
 - 📝 Create, update, and delete todos
 - 🤖 AI chatbot for natural language task management
 - 🎨 Modern UI with dark/light theme
 - ⚡ Real-time updates
 - 💬 Natural language processing
+- 🗄️ PostgreSQL database integration
+- ⚙️ Redis caching support
 
 **Author:** Umema Sultan
 
-**Tech Stack:** Node.js, Express, Vanilla JavaScript
+**Tech Stack:** Node.js, Express, PostgreSQL, Redis, Vanilla JavaScript
 
 ## Usage
 
@@ -42,12 +50,25 @@ npm start
 
 Visit `http://localhost:7860`
 
-## Deploy to Hugging Face Spaces
+## Deployment Options
 
+### 1. Vercel (Live)
+Already deployed at: [https://phase4-smart-todo-manager.vercel.app](https://phase4-smart-todo-manager.vercel.app)
+
+### 2. Docker Compose (Local)
+```bash
+docker-compose up --build
+```
+Visit `http://localhost:3000`
+
+### 3. Hugging Face Spaces
 1. Create a new Space on Hugging Face
 2. Choose "Docker" as SDK
 3. Push this repository to your Space
 4. The app will automatically deploy!
+
+### 4. Kubernetes (Minikube)
+Follow the deployment guide in `specs/k8s-deployment/plan.md`
 
 ---
 
