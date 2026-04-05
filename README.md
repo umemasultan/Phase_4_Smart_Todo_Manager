@@ -41,7 +41,7 @@ npm install
 npm start
 ```
 
-The application will be available at `http://localhost:5000`
+The application will be available at https://phase4-smart-todo-manager.vercel.app/
 
 ## 🎯 Mission Complete
 
