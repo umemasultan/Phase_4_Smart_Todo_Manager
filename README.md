@@ -35,6 +35,20 @@ An intelligent task management application with AI chatbot assistance.
 
 **Tech Stack:** Node.js, Express, PostgreSQL, Redis, Vanilla JavaScript
 
+---
+
+## 👩‍💻 Author
+
+**Umema Sultan**
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/umema-sultan)
+[![GitHub](https://img.shields.io/badge/GitHub-Follow-black?style=flat&logo=github)](https://github.com/umemasultan)
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Click_Here-success?style=flat)](https://phase4-smart-todo-manager.vercel.app)
+
+**🌐 View Live Application:** [https://phase4-smart-todo-manager.vercel.app](https://phase4-smart-todo-manager.vercel.app)
+
+---
+
 ## Usage
 
 Simply chat with the AI assistant:
