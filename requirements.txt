@@ -1,2 +1,5 @@
-# No Python dependencies required
-# This app runs on Node.js
+# Python dependencies for Hugging Face Spaces deployment
+# This file is used by app.py to run the Node.js server
+
+# No Python packages needed - app runs via Node.js
+# The app.py script just starts the Node.js server
