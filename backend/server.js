@@ -30,11 +30,35 @@ let redisClient;
 })();
 
 // Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'healthy',
+app.get('/api/health', async (req, res) => {
+  let dbStatus = 'disconnected';
+  let redisStatus = 'disconnected';
+
+  try {
+    await pool.query('SELECT 1');
+    dbStatus = 'connected';
+  } catch (error) {
+    console.error('Database health check failed:', error);
+  }
+
+  try {
+    if (redisClient && redisClient.isOpen) {
+      await redisClient.ping();
+      redisStatus = 'connected';
+    }
+  } catch (error) {
+    redisStatus = 'disconnected';
+  }
+
+  const isHealthy = dbStatus === 'connected';
+
+  res.status(isHealthy ? 200 : 503).json({
+    status: isHealthy ? 'healthy' : 'unhealthy',
     service: 'todo-backend',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    database: dbStatus,
+    redis: redisStatus,
+    version: '1.0.0'
   });
 });
 
@@ -100,18 +124,100 @@ app.delete('/api/todos/:id', async (req, res) => {
 
 // AI Chat endpoint
 app.post('/api/chat', async (req, res) => {
-  const { message } = req.body;
-  try {
-    // Simple AI response logic
-    let response = 'I can help you manage your todos. Try commands like "add todo", "list todos", or "complete todo".';
+  const { message, user_id = 1 } = req.body;
 
-    if (message.toLowerCase().includes('add') || message.toLowerCase().includes('create')) {
-      response = 'To add a todo, please provide the title and description.';
-    } else if (message.toLowerCase().includes('list') || message.toLowerCase().includes('show')) {
-      const result = await pool.query('SELECT COUNT(*) FROM todos');
-      response = `You have ${result.rows[0].count} todos in your list.`;
-    } else if (message.toLowerCase().includes('help')) {
-      response = 'I can help you: add todos, list todos, update todos, delete todos, and mark todos as complete.';
+  if (!message) {
+    return res.status(400).json({ error: 'Message is required' });
+  }
+
+  let response = '';
+  const lowerMessage = message.toLowerCase();
+
+  try {
+    // Greeting
+    if (lowerMessage.match(/^(hi|hello|hey|greetings)/)) {
+      response = '👋 Hello! I\'m your Todo Assistant created by Umema Sultan. I can help you manage your tasks. Try asking me to show your todos, add a new task, or mark something as complete!';
+    }
+    // Show todos
+    else if (lowerMessage.includes('show') || lowerMessage.includes('list') || lowerMessage.includes('display') || lowerMessage.includes('my todos')) {
+      const result = await pool.query('SELECT * FROM todos WHERE user_id = $1 ORDER BY created_at DESC', [user_id]);
+      const todos = result.rows;
+
+      if (todos.length === 0) {
+        response = '📝 You don\'t have any todos yet. Would you like to add one?';
+      } else {
+        const todoList = todos.map(t => `${t.id}. ${t.title} ${t.completed ? '✅' : '⏳'}`).join('\n');
+        const completedCount = todos.filter(t => t.completed).length;
+        response = `📋 Here are your todos:\n\n${todoList}\n\nTotal: ${todos.length} tasks (${completedCount} completed)`;
+      }
+    }
+    // Add todo
+    else if (lowerMessage.includes('add') || lowerMessage.includes('create') || lowerMessage.includes('new todo')) {
+      const titleMatch = message.match(/add.*?(?:todo|task).*?:?\s*(.+)/i);
+      if (titleMatch && titleMatch[1]) {
+        const title = titleMatch[1].trim();
+        await pool.query(
+          'INSERT INTO todos (user_id, title, description) VALUES ($1, $2, $3)',
+          [user_id, title, 'Added via chatbot']
+        );
+        response = `✅ Great! I've added "${title}" to your todo list.`;
+      } else {
+        response = '📝 To add a todo, please use the format: "Add a new todo: [your task name]"';
+      }
+    }
+    // Complete todo
+    else if (lowerMessage.includes('complete') || lowerMessage.includes('done') || lowerMessage.includes('finish')) {
+      const idMatch = message.match(/(?:todo|task|#)\s*(\d+)/i);
+      if (idMatch) {
+        const id = parseInt(idMatch[1]);
+        const result = await pool.query(
+          'UPDATE todos SET completed = true, updated_at = CURRENT_TIMESTAMP WHERE id = $1 AND user_id = $2 RETURNING *',
+          [id, user_id]
+        );
+
+        if (result.rows.length > 0) {
+          response = `🎉 Awesome! I've marked "${result.rows[0].title}" as completed. Keep up the great work!`;
+        } else {
+          response = `❌ I couldn't find todo #${id}. Try "show my todos" to see all your tasks.`;
+        }
+      } else {
+        response = '📌 To complete a todo, please specify the number. For example: "Complete todo #1"';
+      }
+    }
+    // Delete todo
+    else if (lowerMessage.includes('delete') || lowerMessage.includes('remove')) {
+      const idMatch = message.match(/(?:todo|task|#)\s*(\d+)/i);
+      if (idMatch) {
+        const id = parseInt(idMatch[1]);
+        const result = await pool.query(
+          'DELETE FROM todos WHERE id = $1 AND user_id = $2 RETURNING *',
+          [id, user_id]
+        );
+
+        if (result.rows.length > 0) {
+          response = `🗑️ I've deleted "${result.rows[0].title}" from your list.`;
+        } else {
+          response = `❌ I couldn't find todo #${id}. Try "show my todos" to see all your tasks.`;
+        }
+      } else {
+        response = '📌 To delete a todo, please specify the number. For example: "Delete todo #1"';
+      }
+    }
+    // Help
+    else if (lowerMessage.includes('help') || lowerMessage.includes('what can you do')) {
+      response = `🤖 I'm your AI Todo Assistant! Here's what I can do:
+
+📋 **Show Todos**: "Show my todos" or "List all tasks"
+➕ **Add Todo**: "Add a new todo: Buy groceries"
+✅ **Complete Todo**: "Complete todo #1" or "Mark task #2 as done"
+🗑️ **Delete Todo**: "Delete todo #1" or "Remove task #2"
+👋 **Chat**: Just say hi and I'll help you out!
+
+Try any of these commands and I'll assist you!`;
+    }
+    // Default response
+    else {
+      response = `💬 I understand you said: "${message}"\n\nI can help you manage your todos! Try:\n• "Show my todos"\n• "Add a new todo: [task name]"\n• "Complete todo #1"\n• "Help" for more commands`;
     }
 
     res.json({ response });
