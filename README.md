@@ -11,6 +11,9 @@ app_port: 3000
 
 # 🤖 AI-Powered Todo Chatbot
 
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://phase4-smart-todo-manager.vercel.app)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?style=for-the-badge&logo=github)](https://github.com/umemasultan/Phase_4_Smart_Todo_Manager)
+
 An intelligent task management application with AI chatbot assistance.
 
 ## 🚀 Live Demo
