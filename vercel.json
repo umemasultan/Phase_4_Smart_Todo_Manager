@@ -1,0 +1,16 @@
+{
+  "name": "phase4-smart-todo-manager",
+  "version": 2,
+  "builds": [
+    {
+      "src": "dev-server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/dev-server.js"
+    }
+  ]
+}
