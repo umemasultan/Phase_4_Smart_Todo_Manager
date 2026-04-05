@@ -1,0 +1,2 @@
+# No Python dependencies required
+# This app runs on Node.js
