@@ -2,20 +2,20 @@ FROM node:18-slim
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy API package files
+COPY api/package*.json ./api/
 
-# Install dependencies
-RUN npm install
+# Install API dependencies
+RUN cd api && npm install
 
 # Copy application files
 COPY . .
 
 # Expose port
-EXPOSE 7860
+EXPOSE 3000
 
 # Set environment variable for Hugging Face Spaces
-ENV PORT=7860
+ENV PORT=3000
 
-# Start the application
-CMD ["npm", "start"]
+# Start the API server
+CMD ["node", "api/app/index.js"]

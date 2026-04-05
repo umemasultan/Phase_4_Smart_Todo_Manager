@@ -6,7 +6,7 @@ colorTo: purple
 sdk: docker
 pinned: false
 license: mit
-app_port: 7860
+app_port: 3000
 ---
 
 # 🤖 AI-Powered Todo Chatbot
