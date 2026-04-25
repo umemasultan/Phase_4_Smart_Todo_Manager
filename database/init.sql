@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -30,10 +31,10 @@ CREATE INDEX IF NOT EXISTS idx_todos_completed ON todos(completed);
 CREATE INDEX IF NOT EXISTS idx_chat_sessions_user_id ON chat_sessions(user_id);
 CREATE INDEX IF NOT EXISTS idx_chat_sessions_token ON chat_sessions(session_token);
 
--- Insert sample data
-INSERT INTO users (username, email) VALUES
-    ('john_doe', 'john@example.com'),
-    ('jane_smith', 'jane@example.com')
+-- Insert sample data (password is 'password123' hashed with bcrypt)
+INSERT INTO users (username, email, password) VALUES
+    ('john_doe', 'john@example.com', '$2b$10$rKvVJH8xqX9YvZ5Z5Z5Z5eZ5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z'),
+    ('jane_smith', 'jane@example.com', '$2b$10$rKvVJH8xqX9YvZ5Z5Z5Z5eZ5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z')
 ON CONFLICT (username) DO NOTHING;
 
 INSERT INTO todos (user_id, title, description) VALUES
