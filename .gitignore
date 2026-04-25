@@ -2,3 +2,5 @@ node_modules/
 minikube.exe
 helm.exe
 *.exe
+
+.vercel
